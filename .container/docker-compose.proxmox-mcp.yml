@@ -1,0 +1,21 @@
+services:
+  proxmox-mcp-api:
+    image: ${PROXMOX_MCP_API_IMAGE:?Set PROXMOX_MCP_API_IMAGE in .container/proxmox.env}
+    ports:
+      - "8811:8811"
+    volumes:
+      - ./proxmox-config/config.json:/app/proxmox-config/config.json:ro
+    environment:
+      - PROXMOX_MCP_CONFIG=/app/proxmox-config/config.json
+      - API_HOST=0.0.0.0
+      - API_PORT=8811
+      - PROXMOX_API_KEY=${PROXMOX_API_KEY:?Set PROXMOX_API_KEY in .container/proxmox.env}
+      - PROXMOX_STRICT_AUTH=true
+      - MCPO_CORS_ALLOW_ORIGINS=${MCPO_CORS_ALLOW_ORIGINS:-https://s1.garza.online,http://s1.garza.online,https://mcp.garza.online,http://mcp.garza.online}
+    restart: unless-stopped
+    networks:
+      - proxmox-network
+
+networks:
+  proxmox-network:
+    driver: bridge
