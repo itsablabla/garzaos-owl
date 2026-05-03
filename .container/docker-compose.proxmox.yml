@@ -32,9 +32,9 @@ services:
       - TERM=xterm-256color
       - GRADIO_SERVER_NAME=0.0.0.0
       - GRADIO_SERVER_PORT=7860
-      - PYTHONPATH=.
+      - PYTHONPATH=/app:/app/owl
     ports:
-      - "7860:7860"
+      - "127.0.0.1:${OWL_HOST_PORT:-7860}:7860"
     command: ["xvfb-python", "webapp.py"]
     stdin_open: true
     tty: true

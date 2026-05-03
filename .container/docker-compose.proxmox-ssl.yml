@@ -1,0 +1,24 @@
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - owl
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile.owl:/etc/caddy/Caddyfile:ro
+      - ./certs:/etc/caddy/certs:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    networks:
+      - proxmox-network
+
+volumes:
+  caddy-data:
+  caddy-config:
+
+networks:
+  proxmox-network:
+    driver: bridge

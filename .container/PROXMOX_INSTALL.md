@@ -52,11 +52,13 @@ Replace placeholder values with your real OWL API keys. Do not commit `.containe
 docker compose --env-file .container/proxmox.env -f .container/docker-compose.proxmox.yml up -d
 ```
 
-OWL exposes Gradio on port `7860`:
+By default, the base compose binds Gradio to localhost on the VM only:
 
 ```text
-http://<proxmox-vm-ip>:7860
+http://127.0.0.1:7860
 ```
+
+This keeps direct Gradio access off the LAN/public interface. Use the optional SSL reverse proxy below for LAN, subdomain, or public access, or explicitly change the port bind in `.container/docker-compose.proxmox.yml` if direct exposure is required.
 
 Check status and logs:
 
@@ -66,6 +68,40 @@ docker compose --env-file .container/proxmox.env -f .container/docker-compose.pr
 ```
 
 The compose file uses named volumes for OWL data, pip cache, and Playwright cache so it does not depend on host `~/.cache` paths.
+
+## Optional SSL reverse proxy
+
+The optional Caddy sidecar terminates TLS on ports `80` and `443`, then proxies to OWL on the internal Compose network. Use this path for LAN, subdomain, or public access instead of exposing the base Gradio port directly. Certificate files are local secrets and are ignored by git.
+
+Create the certificate directory:
+
+```bash
+mkdir -p .container/certs
+```
+
+For LAN/self-signed testing, generate a certificate with SANs for your hostname and VM IP:
+
+```bash
+openssl req -x509 -newkey rsa:4096 -sha256 -days 365 -nodes \
+  -keyout .container/certs/owl.key \
+  -out .container/certs/owl.crt \
+  -subj "/CN=owl.garzahive.com" \
+  -addext "subjectAltName=DNS:owl.garzahive.com,IP:<vm-ip>"
+```
+
+Use the deployed VM IP in place of `<vm-ip>`. The example `Caddyfile.owl` includes `owl.garzahive.com` and `10.10.10.31`; update it if your VM IP or hostname differs.
+
+Start OWL with the SSL sidecar:
+
+```bash
+docker compose \
+  --env-file .container/proxmox.env \
+  -f .container/docker-compose.proxmox.yml \
+  -f .container/docker-compose.proxmox-ssl.yml \
+  up -d
+```
+
+A public trusted certificate/subdomain requires DNS, reverse proxy, or Cloudflare routing to the VM IP. This repository provides the container config only; it does not create DNS records or public routing.
 
 ## Optional Proxmox MCP API sidecar
 
