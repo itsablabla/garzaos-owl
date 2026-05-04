@@ -67,7 +67,7 @@ docker compose --env-file .container/proxmox.env -f .container/docker-compose.pr
 docker compose --env-file .container/proxmox.env -f .container/docker-compose.proxmox.yml logs -f owl
 ```
 
-The compose file uses named volumes for OWL data, pip cache, and Playwright cache so it does not depend on host `~/.cache` paths.
+The compose file uses named volumes for OWL data, pip cache, and Playwright cache so it does not depend on host `~/.cache` paths. Because the default deployment uses the prebuilt `mugglejinx/owl:latest` image, it also bind-mounts compatibility/runtime overlay files from the checked-out repository, including `examples/` and `owl/utils/toolkit_compat.py`, so local fixes remain visible inside the container.
 
 ## Optional SSL reverse proxy
 

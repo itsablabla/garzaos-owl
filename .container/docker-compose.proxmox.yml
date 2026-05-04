@@ -4,6 +4,7 @@ services:
     volumes:
       - ./proxmox.env:/app/owl/.env
       - ../examples:/app/examples:ro
+      - ../owl/utils/toolkit_compat.py:/app/owl/utils/toolkit_compat.py:ro
       - owl-data:/app/owl/data
       - pip-cache:/root/.pip/cache
       - playwright-cache:/root/.cache/ms-playwright
