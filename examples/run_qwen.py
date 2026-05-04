@@ -32,7 +32,6 @@ from camel.toolkits import (
     ImageAnalysisToolkit,
     SearchToolkit,
     BrowserToolkit,
-    FileToolkit,
 )
 from camel.types import ModelPlatformType
 from camel.logger import set_log_level
@@ -41,6 +40,7 @@ from camel.tasks.task import Task
 from camel.societies import Workforce
 
 from owl.utils import DocumentProcessingToolkit
+from owl.utils.toolkit_compat import FileToolkit
 
 from typing import List, Dict, Any
 
