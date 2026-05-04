@@ -24,11 +24,15 @@ from camel.toolkits import (
     SearchToolkit,
     BrowserToolkit,
 )
-from camel.types import ModelPlatformType, ModelType
+from camel.types import ModelPlatformType
 from camel.logger import set_log_level
 from camel.tasks.task import Task
 
-from camel.societies import Workforce
+try:
+    from camel.societies import RolePlaying, Workforce
+except ImportError:
+    from camel.societies import RolePlaying
+    from camel.societies.workforce import Workforce
 
 from owl.utils import DocumentProcessingToolkit
 from owl.utils.toolkit_compat import FileToolkit
@@ -44,38 +48,38 @@ set_log_level(level="DEBUG")
 
 def construct_agent_list() -> List[Dict[str, Any]]:
     web_model = ModelFactory.create(
-        model_platform=ModelPlatformType.OPENAI,
-        model_type=ModelType.GPT_5_2,
+        model_platform=ModelPlatformType.OPENAI_COMPATIBLE_MODEL,
+        model_type="gpt-5.2",
         model_config_dict={"temperature": 0},
     )
 
     document_processing_model = ModelFactory.create(
-        model_platform=ModelPlatformType.OPENAI,
-        model_type=ModelType.GPT_5_2,
+        model_platform=ModelPlatformType.OPENAI_COMPATIBLE_MODEL,
+        model_type="gpt-5.2",
         model_config_dict={"temperature": 0},
     )
 
     reasoning_model = ModelFactory.create(
-        model_platform=ModelPlatformType.OPENAI,
-        model_type=ModelType.GPT_5_2,
+        model_platform=ModelPlatformType.OPENAI_COMPATIBLE_MODEL,
+        model_type="gpt-5.2",
         model_config_dict={"temperature": 0},
     )
 
     image_analysis_model = ModelFactory.create(
-        model_platform=ModelPlatformType.OPENAI,
-        model_type=ModelType.GPT_5_2,
+        model_platform=ModelPlatformType.OPENAI_COMPATIBLE_MODEL,
+        model_type="gpt-5.2",
         model_config_dict={"temperature": 0},
     )
 
     browsing_model = ModelFactory.create(
-        model_platform=ModelPlatformType.OPENAI,
-        model_type=ModelType.GPT_5_2,
+        model_platform=ModelPlatformType.OPENAI_COMPATIBLE_MODEL,
+        model_type="gpt-5.2",
         model_config_dict={"temperature": 0},
     )
 
     planning_model = ModelFactory.create(
-        model_platform=ModelPlatformType.OPENAI,
-        model_type=ModelType.GPT_5_2,
+        model_platform=ModelPlatformType.OPENAI_COMPATIBLE_MODEL,
+        model_type="gpt-5.2",
         model_config_dict={"temperature": 0},
     )
 
@@ -170,19 +174,36 @@ Here are some tips that help you perform web search:
     return agent_list
 
 
+def construct_society(question: str) -> RolePlaying:
+    model = ModelFactory.create(
+        model_platform=ModelPlatformType.OPENAI_COMPATIBLE_MODEL,
+        model_type="gpt-5.2",
+        model_config_dict={"temperature": 0},
+    )
+
+    return RolePlaying(
+        task_prompt=question,
+        with_task_specify=False,
+        user_role_name="user",
+        user_agent_kwargs={"model": model},
+        assistant_role_name="assistant",
+        assistant_agent_kwargs={"model": model},
+    )
+
+
 def construct_workforce() -> Workforce:
     coordinator_agent_kwargs = {
         "model": ModelFactory.create(
-            model_platform=ModelPlatformType.OPENAI,
-            model_type=ModelType.GPT_5_2,
+            model_platform=ModelPlatformType.OPENAI_COMPATIBLE_MODEL,
+            model_type="gpt-5.2",
             model_config_dict={"temperature": 0},
         )
     }
 
     task_agent_kwargs = {
         "model": ModelFactory.create(
-            model_platform=ModelPlatformType.OPENAI,
-            model_type=ModelType.GPT_5_2,
+            model_platform=ModelPlatformType.OPENAI_COMPATIBLE_MODEL,
+            model_type="gpt-5.2",
             model_config_dict={"temperature": 0},
         )
     }

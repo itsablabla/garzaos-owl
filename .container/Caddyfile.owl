@@ -1,0 +1,12 @@
+{
+	auto_https off
+}
+
+owl.garzahive.com, 10.10.10.31 {
+	tls /etc/caddy/certs/owl.crt /etc/caddy/certs/owl.key
+	reverse_proxy owl:7860
+}
+
+:80 {
+	reverse_proxy owl:7860
+}

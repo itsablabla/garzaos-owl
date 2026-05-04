@@ -42,6 +42,9 @@ tmp/
 owl/data
 owl/tmp
 owl/.env
+.container/proxmox.env
+.container/proxmox-config/config.json
+.container/certs/
 owl/utils/__pycache__/
 
 # Logs

@@ -37,7 +37,10 @@ from camel.types import ModelPlatformType, ModelType
 from camel.logger import set_log_level
 from camel.tasks.task import Task
 
-from camel.societies import Workforce
+try:
+    from camel.societies import Workforce
+except ImportError:
+    from camel.societies.workforce import Workforce
 
 from owl.utils import DocumentProcessingToolkit
 from owl.utils.toolkit_compat import FileToolkit
