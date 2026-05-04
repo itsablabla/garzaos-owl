@@ -29,8 +29,9 @@ from camel.logger import set_log_level
 from camel.tasks.task import Task
 
 try:
-    from camel.societies import Workforce
+    from camel.societies import RolePlaying, Workforce
 except ImportError:
+    from camel.societies import RolePlaying
     from camel.societies.workforce import Workforce
 
 from owl.utils import DocumentProcessingToolkit
@@ -171,6 +172,23 @@ Here are some tips that help you perform web search:
     agent_list.append(document_processing_agent_dict)
     agent_list.append(reasoning_coding_agent_dict)
     return agent_list
+
+
+def construct_society(question: str) -> RolePlaying:
+    model = ModelFactory.create(
+        model_platform=ModelPlatformType.OPENAI,
+        model_type=ModelType.GPT_5_2,
+        model_config_dict={"temperature": 0},
+    )
+
+    return RolePlaying(
+        task_prompt=question,
+        with_task_specify=False,
+        user_role_name="user",
+        user_agent_kwargs={"model": model},
+        assistant_role_name="assistant",
+        assistant_agent_kwargs={"model": model},
+    )
 
 
 def construct_workforce() -> Workforce:
